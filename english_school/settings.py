@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user.apps.UserConfig',
+    'authorization.apps.AuthorizationConfig',
     'rest_framework',
     'rest_framework_simplejwt',
     # 'django_filters',
@@ -125,15 +126,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  #standart
-# EMAIL_SENDER = 'Bongit <noreply@bongit.co>'
 EMAIL_SENDER = 'alexsan4es619@gmail.com'
 
 
-# EMAIL_HOST = 'smtp.sendgrid.net'
+
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_USER = 'alexsan4es619@gmail.com'
 EMAIL_HOST_PASSWORD = '79SjWRrGML16Qkzh'
 

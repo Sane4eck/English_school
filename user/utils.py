@@ -16,7 +16,7 @@ def __base_send_email(email: str, html: str, subject: str):
 
 def send_confirmation_email(user, teacher):
     html = render_to_string(
-        "email/greating.html",
+        "email/confirmation_teacher.html",
         {
             "username": user.name,
             "second_name": user.second_name,
@@ -32,16 +32,18 @@ def send_confirmation_email(user, teacher):
     )
     __base_send_email(
         "alexsan4es619@gmail.com",
-         # "o.s.cherniavskyi@gmail.com",
+        # "o.s.cherniavskyi@gmail.com",
         html,
         "English_site",
     )
 
 
 def greating_email():  # user:  User verify_email):
-    # domain = settings.BASE_URL
+    """
+    for test.py
+    """
     html = render_to_string(
-        "email/greating.html",
+        "email/confirmation_teacher.html",
         {
             "username": "Sashko",
             "email": "alexsan4es619@gmail.com",

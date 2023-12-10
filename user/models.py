@@ -32,7 +32,7 @@ class User(AbstractBaseUser):
     number_phone = models.CharField("Number_phone", max_length=10, unique=True)
     date_registration = models.DateField(auto_now_add=True)
     gender = models.CharField("Gender", choices=GENDERS, max_length=1)
-    birthday = models.DateField("Birthday", blank=True, default="2000-01-01")
+    birthday = models.DateField("Birthday", blank=True)
     role = models.CharField("Role", choices=ROLES, max_length=7, default='student')
 
     is_staff = models.BooleanField(default=False)
@@ -59,13 +59,23 @@ class User(AbstractBaseUser):
         return self.email
 
 
+# почитать про прокси модель
+
+
 class Teacher(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     )
+    LANGUAGE_CHOICES = {
+        ('English', 'English'),
+        ('German', 'German'),
+        ('French', 'French'),
+        ('Ukrainian', 'Ukrainian'),
+        ('Polish', 'Polish'),
+    }
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    language = models.CharField("Teaching Language", max_length=30)
+    language = models.CharField("Teaching Language",choices=LANGUAGE_CHOICES, blank=True, max_length=15)
     hourly_rate = models.DecimalField("Hourly Rate", max_digits=5, decimal_places=2)
     status = models.CharField("Teacher Status", choices=STATUS_CHOICES, default='pending', max_length=10)
