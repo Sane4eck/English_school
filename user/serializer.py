@@ -23,9 +23,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'second_name', 'email', 'number_phone', 'date_registration', 'gender', 'birthday',
+        fields = ['id', 'name', 'second_name', 'email','password', 'number_phone', 'date_registration', 'gender', 'birthday',
                   'role',
-                  'teacher']
+                  'teacher','status_email']
 
     def create(self, validated_data):
         role = validated_data.pop('role', 'student')
@@ -41,3 +41,15 @@ class UserSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['role'] = instance.get_role_display()  # Добавляем отображаемое значение роли
         return representation
+
+
+class CreateUserSerializer(UserSerializer):
+
+    def validate(self, data):
+        '''
+        Проверяем, авторизован ли пользователь
+        '''
+        user = self.context['request'].user
+        if user.is_authenticated:
+            raise serializers.ValidationError("Вы уже авторизованы и не можете создать новый аккаунт.")
+        return data

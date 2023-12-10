@@ -26,7 +26,12 @@ class User(AbstractBaseUser):
         ("teacher", "Teacher"),
         ("student", "Student")
     )
+    STATUS_EMAIL_CHOICES = (
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+    )
     name = models.CharField("First Name", max_length=30, )
+    # password = models.CharField("Password", max_length=15, blank=True)
     second_name = models.CharField("Second Name", max_length=30)
     email = models.EmailField("Email", unique=True)
     number_phone = models.CharField("Number_phone", max_length=10, unique=True)
@@ -34,6 +39,7 @@ class User(AbstractBaseUser):
     gender = models.CharField("Gender", choices=GENDERS, max_length=1)
     birthday = models.DateField("Birthday", blank=True)
     role = models.CharField("Role", choices=ROLES, max_length=7, default='student')
+    status_email = models.CharField("Status_email",choices=STATUS_EMAIL_CHOICES,max_length=8, default="pending")
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
