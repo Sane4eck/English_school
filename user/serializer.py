@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 from rest_framework import serializers
 from user.models import Teacher, User
-from user.utils import send_confirmation_email, greating_email #TeacherRequestEmail  # send_confirmation_email, greating_email,
+from user.utils import TeacherRequestEmail, VerificationEmail  # send_confirmation_email, greating_email,
 
 
 class TeacherSerializer(serializers.ModelSerializer):
@@ -26,22 +26,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'second_name', 'email', 'password', 'number_phone', 'date_registration', 'gender',
                   'birthday',
                   'role',
-                  'teacher', 'status_email']
+                  'teacher', 'status_email', 'email_confirmation_token']
 
     def create(self, validated_data):
         role = validated_data.pop('role', 'student')
         teacher_data = validated_data.pop('teacher', None)
         user = User.objects.create(**validated_data, role=role)
-
+        VerificationEmail().send_confirmation_email(user)
         if role == 'teacher' and teacher_data:
             teacher = Teacher.objects.create(user=user, **teacher_data)
-            send_confirmation_email(user, teacher)
-            # TeacherRequestEmail.send_confirmation_email(user, teacher)
+            TeacherRequestEmail().send_confirmation_email(user, teacher)
         return user
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['role'] = instance.get_role_display()  # Добавляем отображаемое значение роли
+        representation['role'] = instance.get_role_display()
         return representation
 
 

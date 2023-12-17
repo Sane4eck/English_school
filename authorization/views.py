@@ -1,12 +1,17 @@
+from rest_framework import generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
 
 class CustomUserAuthentication(JWTAuthentication):
     def authenticate(self, request):
-        if request.path == '/api/v1/user-registration/':
+        if request.path == "/api/v1/user-registration/":
             return None
-        # Вызываем родительский метод authenticate для получения пользователя из токена
+        if "/confirmation_email/email_status/" in request.path:
+            return None
+            # параметр 'status_email' равен 'approved'
+            # if request.GET.get('status_email') == 'approved':
+            #     return None
         user, jwt_value = super().authenticate(request)
 
         if user and hasattr(user, "status_email"):

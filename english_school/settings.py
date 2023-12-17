@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user.apps.UserConfig',
+    'confirmation_email.apps.ConfirmationEmailConfig',
     'authorization.apps.AuthorizationConfig',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'english_school.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,18 +126,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  #standart
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # standart
 EMAIL_SENDER = 'alexsan4es619@gmail.com'
-
-
 
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'alexsan4es619@gmail.com'
 EMAIL_HOST_PASSWORD = '79SjWRrGML16Qkzh'
-
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
