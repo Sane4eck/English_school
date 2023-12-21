@@ -18,7 +18,16 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+# TODO переписать чойсы на классы
 class User(AbstractBaseUser):
+    class GenderChoices(models.TextChoices):
+        MALE = "m", "Male"
+        FEMALE = "f", "Female"
+
+    class StatusEmailChoices(models.TextChoices):
+        PENDING = "pending", "Pending"
+        APPROVED = "approved", "Approved"
+
     GENDERS = (
         ("m", "Male"),
         ("f", "Female")
@@ -38,8 +47,8 @@ class User(AbstractBaseUser):
     date_registration = models.DateField(auto_now_add=True)
     gender = models.CharField("Gender", choices=GENDERS, max_length=1)
     birthday = models.DateField("Birthday", blank=True)
-    role = models.CharField("Role", choices=ROLES, max_length=7, default="student")
-    status_email = models.CharField("Status_email", choices=STATUS_EMAIL_CHOICES, max_length=8, default="pending")
+    role = models.CharField("Role", choices=ROLES, max_length=7)
+    status_email = models.CharField("Status_email", choices=StatusEmailChoices.choices, max_length=8, default="pending")
     email_confirmation_token = models.UUIDField(default=uuid.uuid4, editable=False)
 
     is_staff = models.BooleanField(default=False)
@@ -64,9 +73,6 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
-
-
-# почитать про прокси модель
 
 
 class Teacher(models.Model):

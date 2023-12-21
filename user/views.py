@@ -1,44 +1,47 @@
-from django.shortcuts import render
-from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.response import Response
-from django.contrib.auth.hashers import make_password
+from rest_framework import generics, permissions
+from rest_framework.permissions import IsAdminUser
+
+from rest_framework import viewsets
+
 from user.models import User, Teacher
-from user.serializer import UserSerializer, TeacherStatusUpdateSerializer, CreateUserSerializer
+from user.serializer import TeacherStatusUpdateSerializer, CreateUserSerializer
 
 
-class UserApiView(generics.ListAPIView, generics.DestroyAPIView):
-    queryset = User.objects.all()  # .order_by("email")
-    serializer_class = UserSerializer
-    # permission_classes = [IsAdminUser]
-    permission_classes = [IsAuthenticated]
-
-
-class UserCreateApiView(generics.CreateAPIView):
-    """
-      Создание пользователя
-    """
-    queryset = User.objects.all()  # .order_by("email")
+class UserApiViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
     serializer_class = CreateUserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        password = data.get('password')
-        hashed_password = make_password(password)
-        data['password'] = hashed_password
-        response = super().create(request, *args, **kwargs)
-        return response
+    def get_permissions(self):
+        if self.action == "create":
+            self.permission_classes = [permissions.AllowAny]
+        elif self.action == "partial_update":
+            self.permission_classes = [permissions.IsAuthenticated]
+        elif self.action in ["list", "retrieve", "update", "destroy"]:
+            self.permission_classes = [permissions.IsAdminUser]
+        return super().get_permissions()
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+
+# class UserCreateApiView(generics.CreateAPIView):
+#     """
+#       Создание пользователя
+#     """
+#     queryset = User.objects.all()  # .order_by("email")
+#     serializer_class = CreateUserSerializer
+#     permission_classes = [AllowAny]
 
 
 class TeacherStatusUpdateView(generics.UpdateAPIView, generics.RetrieveAPIView):
     queryset = Teacher.objects.all()
     serializer_class = TeacherStatusUpdateSerializer
     permission_classes = [IsAdminUser]
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    http_method_names = ["patch"]

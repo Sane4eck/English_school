@@ -1,9 +1,13 @@
-from django.urls import path
-from user.views import UserApiView, TeacherStatusUpdateView, UserCreateApiView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from user.views import UserApiViewSet, TeacherStatusUpdateView
+
+
+router = DefaultRouter()
+router.register(r'users', UserApiViewSet, basename ='UserApiView')
 
 urlpatterns = [
-    path('user/', UserApiView.as_view()),
-    path('user-registration/', UserCreateApiView.as_view()),
-    path('user/<int:pk>/', UserApiView.as_view()),
+    path('',include(router.urls)),
     path('update-teacher-status/<int:pk>/', TeacherStatusUpdateView.as_view(), name='update-teacher-status'),
 ]

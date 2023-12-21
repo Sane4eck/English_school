@@ -135,13 +135,15 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'alexsan4es619@gmail.com'
 EMAIL_HOST_PASSWORD = '79SjWRrGML16Qkzh'
 
+EMAIL_BOSS = 'alexsan4es619@gmail.com'
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
 
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'authorization.views.CustomUserAuthentication',
+        # 'authorization.views.CustomUserAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',

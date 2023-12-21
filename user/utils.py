@@ -4,50 +4,65 @@ from django.template.loader import render_to_string
 
 
 class EmailSender:
-    def __init__(self, from_email=settings.EMAIL_SENDER):
-        self.from_email = from_email
+    def __init__(self, to_email):
+        self.to_email = to_email
+    email = ""
+    subject = ""
 
-    def send_email(self, to_email, subject, html_body):
+    def generate_context(self, **kwargs):
+        return {}
+
+    def __send_email(self, to_email, subject, html_body):
         msg = EmailMessage(
             subject=subject,
             body=html_body.replace("\n", ""),
-            from_email=self.from_email,
+            from_email=settings.EMAIL_SENDER,
             to=[to_email],
         )
         msg.content_subtype = "html"
         msg.send()
 
+    def send_email(self, **kwargs):
+        # print(kwargs['email'])
+        html = render_to_string(
+            self.email,
+            self.generate_context(**kwargs),
+        )
+        self.__send_email(self.to_email, self.subject, html)
+
 
 class TeacherRequestEmail(EmailSender):
-    def send_confirmation_email(self, user, teacher):
-        html = render_to_string(
-            "email/confirmation_teacher.html",
-            {
-                "username": user.name,
-                "second_name": user.second_name,
-                "email": user.email,
-                "number_phone": user.number_phone,
-                "gender": user.gender,
-                "birthday": user.birthday,
-                "role": user.role,
-                "language": teacher.language,
-                "hourly_rate": teacher.hourly_rate,
-                "reset_url": f"http://127.0.0.1:8000/admin/user/teacher/{user.id}/change/",
-            },
-        )
-        self.send_email("alexsan4es619@gmail.com", "English_site", html)
+    email = "email/confirmation_teacher.html"
+    subject = "English_site"
+
+    def generate_context(self, **kwargs):
+        user = kwargs['user']
+        teacher = kwargs['teacher']
+
+        return {
+            "username": user.name,
+            "second_name": user.second_name,
+            "email": user.email,
+            "number_phone": user.number_phone,
+            "gender": user.gender,
+            "birthday": user.birthday,
+            "role": user.role,
+            "language": teacher.language,
+            "hourly_rate": teacher.hourly_rate,
+            "reset_url": f"http://127.0.0.1:8000/admin/user/teacher/{user.id}/change/",
+        }
 
 
 class VerificationEmail(EmailSender):
-    def send_confirmation_email(self, user):
-        html = render_to_string(
-            "email/confirmation_email.html",
-            {
-                "username": user.name,
-                "verification_url": f"http://127.0.0.1:8000/confirmation_email/email_status/{user.id}/?status_email=approved&email_confirmation_token={user.email_confirmation_token}",
-            },  # email_status/<int:pk>/?status_email=approved&email_confirmation_token=
-        )
-        self.send_email(user.email, "English_site", html)
+    email = "email/confirmation_email.html"
+    subject = "English_site"
+
+    def generate_context(self, **kwargs):
+        user = kwargs['user']
+        return {
+            "username": user.name,
+            "verification_url": f"http://127.0.0.1:8000/confirmation_email/email_status/{user.id}/?status_email=approved&email_confirmation_token={user.email_confirmation_token}",
+        }
 
 #
 # def __base_send_email(email: str, html: str, subject: str):

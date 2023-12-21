@@ -11,8 +11,8 @@ from rest_framework import status
 
 
 class ConfirmationEmailApiView(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = ConfirmationEmailSerializer
+    queryset = User.objects.all().filter(status_email = "pending")
+    # serializer_class = ConfirmationEmailSerializer
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
@@ -20,9 +20,9 @@ class ConfirmationEmailApiView(generics.RetrieveAPIView):
         status_email = request.query_params.get("status_email", None)
         instance = self.get_object()
         if email_confirmation_token and status_email:
-            if instance.status_email == "approved":
+            if instance.status_email == User.StatusEmailChoices.APPROVED:
                 return Response({"detail": "Статус email уже был подтверждён."}, status=status.HTTP_400_BAD_REQUEST)
-            elif instance.status_email == "pending":
+            elif instance.status_email == User.StatusEmailChoices.PENDING:
                 if instance.email_confirmation_token == email_confirmation_token:
                     instance.status_email = status_email
                     instance.save()
