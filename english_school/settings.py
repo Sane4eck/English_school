@@ -109,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ["english_school.backends.CheckAccessBackend"]
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
