@@ -1,3 +1,15 @@
+import uuid
+from datetime import timedelta, datetime
 from django.db import models
 
-# Create your models here.
+from user.models import User
+
+
+def time_end():
+    return datetime.utcnow() + timedelta(minutes=5)# hours=24)
+
+
+class ConfirmationEmail(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    email_confirmation_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    date_finish = models.DateTimeField(default=time_end)

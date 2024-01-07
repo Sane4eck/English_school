@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 class EmailSender:
     def __init__(self, to_email):
         self.to_email = to_email
+
     email = ""
     subject = ""
 
@@ -53,16 +54,28 @@ class TeacherRequestEmail(EmailSender):
         }
 
 
-class VerificationEmail(EmailSender):
+class ConfirmationEmailSender(EmailSender):
     email = "email/confirmation_email.html"
     subject = "English_site"
 
     def generate_context(self, **kwargs):
-        user = kwargs['user']
+        user = kwargs["user"]
+        email_confirmation_token_model = kwargs["email_confirmation_token"]
         return {
             "username": user.name,
-            "verification_url": f"http://127.0.0.1:8000/confirmation_email/email_status/{user.id}/?status_email=approved&email_confirmation_token={user.email_confirmation_token}",
+            "verification_url": f"http://127.0.0.1:8000/confirmation_email/email_status/{email_confirmation_token_model.email_confirmation_token}/",
+            # "verification_url": f"http://127.0.0.1:8000/confirmation_email/email_status/{user.id}/?email_confirmation_token={user.email_confirmation_token}",
         }
+
+
+
+
+
+
+
+
+
+
 
 #
 # def __base_send_email(email: str, html: str, subject: str):

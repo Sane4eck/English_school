@@ -7,7 +7,7 @@ from user.models import User
 
 
 class CustomUserAuthentication(TokenObtainPairView):
-    queryset = User.objects.filter(status_email="approved")
+    queryset = User.objects.filter(status_email=True)
 
 # class CustomUserAuthentication(JWTAuthentication):
 #     def authenticate(self, request):
