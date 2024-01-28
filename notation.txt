@@ -1,0 +1,2 @@
+serializer in User
+method Get for Teacher fo admin
