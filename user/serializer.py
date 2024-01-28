@@ -5,11 +5,21 @@ from user.utils import ConfirmationEmailSender
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # queryset = User.objects.filter(status_email=True) # CHECK
     class Meta:
         model = User
-        fields = ['id', 'name', 'second_name', 'email', 'password', 'number_phone', 'date_registration', 'gender',
-                  'birthday', 'role', 'status_email']
+        fields = [
+            "id",
+            "name",
+            "second_name",
+            "email",
+            "password",
+            "number_phone",
+            "date_registration",
+            "gender",
+            "birthday",
+            "role",
+            "status_email",
+        ]
 
         # pip install black
         # black .  --exclude=venv
@@ -17,9 +27,13 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_permission = self.context["request"].user
         if user_permission.is_authenticated:
-            raise serializers.ValidationError("Вы уже авторизованы и не можете создать новый аккаунт.")
+            raise serializers.ValidationError(
+                "Вы уже авторизованы и не можете создать новый аккаунт."
+            )
         # TODO create class permission is npt authtificated
         user = User.objects.create_user(**validated_data)
         confirmation_email = ConfirmationEmail.objects.create(user=user)
-        ConfirmationEmailSender(to_email=user.email).send_email(user=user, email_confirmation_token=confirmation_email)
+        ConfirmationEmailSender(to_email=user.email).send_email(
+            user=user, email_confirmation_token=confirmation_email
+        )
         return user

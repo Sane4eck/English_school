@@ -34,7 +34,9 @@ class User(AbstractBaseUser):
     date_registration = models.DateField(auto_now_add=True)
     gender = models.CharField("Gender", choices=GenderChoices.choices, max_length=1)
     birthday = models.DateField("Birthday", blank=True)
-    role = models.CharField("Role", choices=RoleChoices.choices, max_length=7, default=RoleChoices.STUDENT)
+    role = models.CharField(
+        "Role", choices=RoleChoices.choices, max_length=7, default=RoleChoices.STUDENT
+    )
     status_email = models.BooleanField("Status_email", default=False)
 
     is_staff = models.BooleanField(default=False)

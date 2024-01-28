@@ -1,12 +1,11 @@
 import uuid
 from datetime import timedelta, datetime
 from django.db import models
-
 from user.models import User
 
 
 def time_end():
-    return datetime.utcnow() + timedelta(minutes=5)# hours=24)
+    return datetime.utcnow() + timedelta(minutes=5)  # hours=24) #TODO
 
 
 class ConfirmationEmail(models.Model):

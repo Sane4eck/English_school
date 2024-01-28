@@ -17,12 +17,32 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ConfirmationEmail',
+            name="ConfirmationEmail",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email_confirmation_token', models.UUIDField(default=uuid.uuid4, editable=False)),
-                ('date_finish', models.DateTimeField(default=confirmation_email.models.time_end)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "email_confirmation_token",
+                    models.UUIDField(default=uuid.uuid4, editable=False),
+                ),
+                (
+                    "date_finish",
+                    models.DateTimeField(default=confirmation_email.models.time_end),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

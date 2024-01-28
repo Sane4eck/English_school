@@ -29,11 +29,23 @@ class LanguageInform(models.Model):
         TENYEARS = "tenyears", "five - ten years"
         MORETENYEARS = "moretenyears", "more than ten years"
 
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="languages")
-    language = models.CharField("Teaching Language", choices=LanguageChoices.choices, max_length=15)
+    teacher = models.ForeignKey(
+        Teacher, on_delete=models.CASCADE, related_name="languages"
+    )
+    language = models.CharField(
+        "Teaching Language", choices=LanguageChoices.choices, max_length=15
+    )
     cost = models.FloatField("Cost")
-    experience_language = models.CharField("Experience teaching language", choices=ExperienceTeachingChoices,
-                                           max_length=20)
-    status_language = models.CharField("Status language", choices=StatusLanguageChoices.choices, max_length=10,
-                                       default=StatusLanguageChoices.PENDING)
+    experience_language = models.CharField(
+        "Experience teaching language", choices=ExperienceTeachingChoices, max_length=20
+    )
+    status_language = models.CharField(
+        "Status language",
+        choices=StatusLanguageChoices.choices,
+        max_length=10,
+        default=StatusLanguageChoices.PENDING,
+    )
     date_approval_language = models.DateTimeField(null=True)
+
+    class Meta:
+        unique_together = ("teacher", "language")

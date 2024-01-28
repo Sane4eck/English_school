@@ -1,23 +1,23 @@
-import uuid
-from datetime import datetime, timedelta
-
+from datetime import datetime
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, ListModelMixin
+from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin
 from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
-
+from rest_framework.viewsets import GenericViewSet
 from confirmation_email.models import ConfirmationEmail
-from confirmation_email.serializer import ConfirmationEmailSerializer, ConfirmationEmailRefreshSerializer
+from confirmation_email.serializer import (
+    ConfirmationEmailSerializer,
+    ConfirmationEmailRefreshSerializer,
+)
 from rest_framework.response import Response
-
 from user.models import User
-from user.serializer import UserSerializer
 from user.utils import ConfirmationEmailSender
+
 
 def time():
     return datetime.utcnow()
+
 
 class ConfirmationEmailApiView(RetrieveModelMixin, GenericViewSet):
     def get_queryset(self):
@@ -47,15 +47,22 @@ class ConfirmationEmailRefreshApiView(CreateModelMixin, GenericAPIView):
         if instance.status_email:
             return Response({"Email already confirmed": status.HTTP_200_OK})
         else:
-            confirmation_email, created = ConfirmationEmail.objects.get_or_create(user_id=instance.id, defaults={})
+            confirmation_email, created = ConfirmationEmail.objects.get_or_create(
+                user_id=instance.id, defaults={}
+            )
             if confirmation_email.date_finish < timezone.now():
                 print(timezone.now())
                 confirmation_email.delete()
                 confirmation_email = ConfirmationEmail.objects.create(user=instance)
                 confirmation_email.save()
-                ConfirmationEmailSender(to_email=instance.email).send_email(user=instance,
-                                                                        email_confirmation_token=confirmation_email)
+                ConfirmationEmailSender(to_email=instance.email).send_email(
+                    user=instance, email_confirmation_token=confirmation_email
+                )
             else:
                 print(timezone.now())
-                return Response({"The letter is already in your mail, check your spam": status.HTTP_200_OK})
+                return Response(
+                    {
+                        "The letter is already in your mail, check your spam": status.HTTP_200_OK
+                    }
+                )
             return Response({"A letter has been sent by mail": status.HTTP_200_OK})

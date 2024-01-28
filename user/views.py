@@ -11,7 +11,9 @@ class UserApiViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == "create":
-            self.permission_classes = [permissions.AllowAny, ]
+            self.permission_classes = [
+                permissions.AllowAny,
+            ]
         elif self.action == "partial_update":
             self.permission_classes = [permissions.IsAuthenticated]
         elif self.action in ["list", "retrieve", "update", "destroy"]:

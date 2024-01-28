@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from confirmation_email.models import ConfirmationEmail
+
+admin.site.register(ConfirmationEmail)
