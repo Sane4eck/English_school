@@ -1,13 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from user.views import UserApiViewSet, TeacherStatusUpdateView
-
+from user.views import UserApiViewSet
 
 router = DefaultRouter()
-router.register(r'users', UserApiViewSet, basename ='UserApiView')
+router.register(r"", UserApiViewSet, basename="UserApiView")
 
-urlpatterns = [
-    path('',include(router.urls)),
-    path('update-teacher-status/<int:pk>/', TeacherStatusUpdateView.as_view(), name='update-teacher-status'),
-]
+urlpatterns = []
+
+urlpatterns += router.urls

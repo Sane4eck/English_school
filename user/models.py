@@ -1,4 +1,4 @@
-import uuid
+from datetime import timedelta, datetime
 
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -18,44 +18,32 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-# TODO переписать чойсы на классы
 class User(AbstractBaseUser):
     class GenderChoices(models.TextChoices):
         MALE = "m", "Male"
         FEMALE = "f", "Female"
 
-    class StatusEmailChoices(models.TextChoices):
-        PENDING = "pending", "Pending"
-        APPROVED = "approved", "Approved"
+    class RoleChoices(models.TextChoices):
+        STUDENT = "student", "Student"
+        TEACHER = "teacher", "Teacher"
 
-    GENDERS = (
-        ("m", "Male"),
-        ("f", "Female")
-    )
-    ROLES = (
-        ("teacher", "Teacher"),
-        ("student", "Student")
-    )
-    STATUS_EMAIL_CHOICES = (
-        ("pending", "Pending"),
-        ("approved", "Approved"),
-    )
     name = models.CharField("First Name", max_length=30)
     second_name = models.CharField("Second Name", max_length=30)
     email = models.EmailField("Email", unique=True)
     number_phone = models.CharField("Number_phone", max_length=10, unique=True)
     date_registration = models.DateField(auto_now_add=True)
-    gender = models.CharField("Gender", choices=GENDERS, max_length=1)
+    gender = models.CharField("Gender", choices=GenderChoices.choices, max_length=1)
     birthday = models.DateField("Birthday", blank=True)
-    role = models.CharField("Role", choices=ROLES, max_length=7)
-    status_email = models.CharField("Status_email", choices=StatusEmailChoices.choices, max_length=8, default="pending")
-    email_confirmation_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    role = models.CharField(
+        "Role", choices=RoleChoices.choices, max_length=7, default=RoleChoices.STUDENT
+    )
+    status_email = models.BooleanField("Status_email", default=False)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name", "second_name", "birthday", "number_phone", "gender", "role"]
+    REQUIRED_FIELDS = ["name", "second_name", "birthday", "number_phone", "gender"]
 
     objects = UserManager()
 
@@ -73,22 +61,3 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
-
-
-class Teacher(models.Model):
-    STATUS_CHOICES = (
-        ("pending", "Pending"),
-        ("approved", "Approved"),
-        ("rejected", "Rejected"),
-    )
-    LANGUAGE_CHOICES = {
-        ("English", "English"),
-        ("German", "German"),
-        ("French", "French"),
-        ("Ukrainian", "Ukrainian"),
-        ("Polish", "Polish"),
-    }
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    language = models.CharField("Teaching Language", choices=LANGUAGE_CHOICES, blank=True, max_length=15)
-    hourly_rate = models.DecimalField("Hourly Rate", max_digits=5, decimal_places=2)
-    status = models.CharField("Teacher Status", choices=STATUS_CHOICES, default="pending", max_length=10)

@@ -1,7 +1,14 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from confirmation_email.views import (
+    ConfirmationEmailApiView,
+    ConfirmationEmailRefreshApiView,
+)
 
-from confirmation_email.views import ConfirmationEmailApiView
+router = DefaultRouter()
+router.register(r"email_status", ConfirmationEmailApiView, basename="email_status")
 
 urlpatterns = [
-    path('email_status/<int:pk>/', ConfirmationEmailApiView.as_view(), name='confirmation_email'),
+    path("email_status_refresh/", ConfirmationEmailRefreshApiView.as_view()),
 ]
+urlpatterns += router.urls
